@@ -1,3 +1,12 @@
+import pygame
+
+SCREEN_WIDTH = 500
+SCREEN_HEIGHT = 600
+x = 0
+y = 0
+dif = SCREEN_WIDTH / 9
+
+
 class Board:
     board = [
         [0, 3, 1, 0, 5, 0, 0, 0, 4],
@@ -59,10 +68,10 @@ def check_valid(board, num, pos):
         if num == row[i] and i != pos[1]:
             return False
 
-        # Check column
-        for j in range(len(board)):
-            if num == board[j][pos[1]] and j != pos[0]:
-                return False
+    # Check column
+    for j in range(len(board)):
+        if num == board[j][pos[1]] and j != pos[0]:
+            return False
 
     # Check box
     row = pos[0] // 3 * 3
@@ -76,10 +85,24 @@ def check_valid(board, num, pos):
     return True
 
 
-print(find_empty(Board.board))
-print(check_valid(Board.board, 9, [1, 1]))
-board = Board()
-board.solve()
+def main():
+    pygame.font.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    pygame.display.set_caption("Sudoku Game")
 
-for i in range(len(board.board[0])):
+    board = Board()
+
+
+def get_cords(pos):
+    global x, y
+    x = pos[0] // dif
+    y = pos[1] // dif
+
+
+board = Board()
+for i in range(9):
+    print(board.board[i])
+board.solve()
+print()
+for i in range(9):
     print(board.board[i])

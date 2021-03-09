@@ -1,26 +1,35 @@
 import pygame
 
-SCREEN_WIDTH = 500
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 450
+SCREEN_HEIGHT = 450
 x = 0
 y = 0
 dif = SCREEN_WIDTH / 9
+FPS = 10
+BACKGROUND_COLOUR = (255, 255, 255)
+LINE_COLOUR_LIGHT = (200, 200, 200)
+LINE_COLOUR_DARK = (0, 0, 0)
+BOX_SIZE = SCREEN_WIDTH // 3
+SQUARE_SIZE = BOX_SIZE // 3
 
 
 class Board:
+    """Class board:
+        Contains Sudoku board that needs to be solved and solves board"""
     board = [
-        [0, 3, 1, 0, 5, 0, 0, 0, 4],
-        [0, 0, 0, 7, 0, 0, 0, 0, 1],
-        [0, 0, 0, 2, 0, 0, 0, 0, 5],
-        [0, 2, 4, 0, 0, 6, 0, 0, 9],
-        [0, 8, 0, 0, 0, 0, 0, 5, 0],
-        [5, 0, 0, 0, 2, 0, 7, 8, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [9, 0, 0, 0, 0, 0, 0, 2, 0],
-        [6, 0, 0, 4, 0, 7, 0, 0, 0]
+        [0, 0, 0, 0, 9, 0, 0, 3, 0],
+        [0, 0, 5, 0, 0, 6, 0, 0, 0],
+        [0, 0, 9, 0, 0, 0, 0, 0, 8],
+        [0, 0, 2, 0, 0, 0, 5, 0, 0],
+        [8, 0, 0, 0, 7, 0, 0, 0, 1],
+        [0, 0, 4, 0, 0, 0, 6, 0, 0],
+        [9, 0, 0, 0, 0, 0, 4, 0, 0],
+        [0, 0, 0, 5, 0, 0, 2, 0, 0],
+        [0, 7, 0, 0, 1, 0, 0, 0, 0]
     ]
 
     def solve(self):
+        """Solve Sudoku board using recursive backtracking algorithm"""
         empty = find_empty(self.board)
         if not empty:
             return True
@@ -38,6 +47,7 @@ class Board:
 
 
 class Square:
+    """Represents single square of a Sudoku board"""
     rows = 9
     cols = 9
 
@@ -85,12 +95,18 @@ def check_valid(board, num, pos):
     return True
 
 
-def main():
-    pygame.font.init()
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    pygame.display.set_caption("Sudoku Game")
+def draw_grid():
+    # Draw light lines
+    for i in range(0, SCREEN_WIDTH, SQUARE_SIZE):  # Draw vertical lines
+        pygame.draw.line(SCREEN, LINE_COLOUR_LIGHT, (i, 0), (i, SCREEN_HEIGHT))
+    for i in range(0, SCREEN_HEIGHT, SQUARE_SIZE):  # Draw horizontal lines
+        pygame.draw.line(SCREEN, LINE_COLOUR_LIGHT, (0, i), (SCREEN_WIDTH, i))
 
-    board = Board()
+    # Draw dark lines
+    for i in range(0, SCREEN_WIDTH, BOX_SIZE): # Draw vertical lines
+        pygame.draw.line(SCREEN, LINE_COLOUR_DARK, (i, 0), (i, SCREEN_HEIGHT))
+    for i in range(0, SCREEN_HEIGHT, BOX_SIZE): # Draw horizontal lines
+        pygame.draw.line(SCREEN, LINE_COLOUR_DARK, (0, i), (SCREEN_WIDTH, i))
 
 
 def get_cords(pos):
@@ -99,10 +115,44 @@ def get_cords(pos):
     y = pos[1] // dif
 
 
-board = Board()
-for i in range(9):
-    print(board.board[i])
-board.solve()
-print()
-for i in range(9):
-    print(board.board[i])
+def main():
+    global SCREEN
+    # Initialize pygame
+    pygame.init()
+    FPSCLOCK = pygame.time.Clock()
+
+    # create the screen
+    SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+    # Title and Icon
+    pygame.display.set_caption("Sudoku Solver")
+    icon = pygame.image.load('assets/sudoku_logo.png')
+    pygame.display.set_icon(icon)
+
+    # Game loop
+    running = True
+
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        SCREEN.fill(BACKGROUND_COLOUR)
+        draw_grid()
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
+
+
+# board = Board()
+# # prints unsolved board
+# for i in range(9):
+#     print(board.board[i])
+# board.solve()
+#
+# print()
+# # prints solved board
+# for i in range(9):
+#     print(board.board[i])
+
+if __name__ == '__main__':
+    main()

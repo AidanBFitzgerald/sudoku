@@ -156,10 +156,6 @@ def display_board(board):
                 cell_rect = cell_surf.get_rect()
                 cell_rect.center = (x_pos, y_pos)
                 SCREEN.blit(cell_surf, cell_rect)
-    wrong_font = pygame.font.Font('freesansbold.ttf', 10)
-    wrong_answer_text = wrong_font.render('Wrong answers: %s' % wrong_answer_count, True, BLACK)
-    wrong_text_frame = wrong_answer_text.get_rect()
-    wrong_text_frame.center = (SCREEN_WIDTH - 50, SCREEN_HEIGHT + 20)
 
 
 def draw_selected(x_click, y_click):
@@ -167,6 +163,14 @@ def draw_selected(x_click, y_click):
     x_pos = int(x_pos * SQUARE_SIZE)
     y_pos = int(y_pos * SQUARE_SIZE)
     pygame.draw.rect(SCREEN, BLUE, (x_pos, y_pos, SQUARE_SIZE, SQUARE_SIZE), 1)
+
+
+def display_wrong_answers():
+    wrong_font = pygame.font.Font('freesansbold.ttf', 10)
+    wrong_answer_text = wrong_font.render('Wrong answers: %s' % wrong_answer_count, True, BLACK)
+    wrong_text_frame = wrong_answer_text.get_rect()
+    wrong_text_frame.center = (SCREEN_WIDTH - 50, SCREEN_HEIGHT + 20)
+    SCREEN.blit(wrong_answer_text, wrong_text_frame)
 
 
 def get_cords(pos):
@@ -185,7 +189,6 @@ def change_num(board, solved_board, x_click, y_click, num):
             board[y_pos][x_pos].valid = True
         else:
             wrong_answer_count += 1
-            print(wrong_answer_count)
 
 
 def main():
@@ -212,12 +215,6 @@ def main():
     text_frame = button_text.get_rect()
     text_frame.center = (20 + 40 ,SCREEN_HEIGHT + 20)
     button = pygame.Rect(20, SCREEN_HEIGHT + 5, 80, 30)
-
-    # Wrong answer count
-    wrong_font = pygame.font.Font('freesansbold.ttf', 10)
-    wrong_answer_text = wrong_font.render('Wrong answers: %s' % wrong_answer_count, True, BLACK)
-    wrong_text_frame = wrong_answer_text.get_rect()
-    wrong_text_frame.center = (SCREEN_WIDTH - 50, SCREEN_HEIGHT + 20)
 
     # Initializing board
     board = init_squares(BOARD)
@@ -262,7 +259,7 @@ def main():
             draw_selected(x_click, y_click)
         SCREEN.blit(button_text, text_frame)
         pygame.draw.rect(SCREEN, BLACK, button, 3)
-        SCREEN.blit(wrong_answer_text, wrong_text_frame)
+        display_wrong_answers()
         display_board(board)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
